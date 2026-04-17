@@ -12,6 +12,7 @@
     "lint": "npm run lint --workspaces --if-present"
   },
   "dependencies": {
+    "octokit": "^5.0.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
