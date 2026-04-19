@@ -2,7 +2,7 @@
 // https://github.com/octokit/core.js#readme
 import { Octokit } from "octokit";
 
-interface GitHubRepoResponse {
+export interface GitHubRepoResponse {
   id: number;
   name: string;
   full_name: string;
@@ -12,7 +12,7 @@ interface GitHubRepoResponse {
   language: string;
 }
 
-interface RepoFiltrado {
+export interface RepoFiltrado {
   id: number;
   name: string;
   full_name: string;
@@ -24,7 +24,7 @@ interface RepoFiltrado {
 
 const octokit = new Octokit();
 
-const res = await octokit.request("GET /users/gabriellopasso/repos", {
+export const res = await octokit.request("GET /users/gabriellopasso/repos", {
   username: "gabriellopasso",
   headers: {
     "X-GitHub-Api-Version": "2026-03-10",
