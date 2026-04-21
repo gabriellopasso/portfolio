@@ -22,26 +22,27 @@ export interface RepoFiltrado {
   language: string;
 }
 
-const octokit = new Octokit();
+export async function getRepositoriosGitHub(): Promise<RepoFiltrado[]> {
+  const octokit = new Octokit();
 
-export const res = await octokit.request("GET /users/gabriellopasso/repos", {
-  username: "gabriellopasso",
-  headers: {
-    "X-GitHub-Api-Version": "2026-03-10",
-  },
-});
-//console.log(res.data);
+  const res = await octokit.request("GET /users/gabriellopasso/repos", {
+    username: "gabriellopasso",
+    headers: {
+      "X-GitHub-Api-Version": "2026-03-10",
+    },
+  });
+  //console.log(res.data);
 
-const repositoriosBrutos: GitHubRepoResponse[] = res.data;
+  const repositoriosBrutos: GitHubRepoResponse[] = res.data;
 
-const reposFiltrados: RepoFiltrado[] = repositoriosBrutos.map((repo) => ({
-  id: repo.id,
-  name: repo.name,
-  full_name: repo.full_name,
-  visibility: repo.visibility,
-  html_url: repo.html_url,
-  description: repo.description,
-  language: repo.language,
-}));
-
-console.log(reposFiltrados);
+  const reposFiltrados: RepoFiltrado[] = repositoriosBrutos.map((repo) => ({
+    id: repo.id,
+    name: repo.name,
+    full_name: repo.full_name,
+    visibility: repo.visibility,
+    html_url: repo.html_url,
+    description: repo.description,
+    language: repo.language,
+  }));
+  return reposFiltrados;
+}
