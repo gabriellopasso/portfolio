@@ -1,18 +1,22 @@
 import express from "express";
 import dotenv from "dotenv";
-import { type Request, type Response } from "express";
-import { getRepositoriosGitHub } from "./services/githubService";
-
-//const { Request, Response } = express();
+import githubRouter from "./routes/githubAPI.ts";
+import cors from "cors";
 
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get("/", async (req: Request, res: Response) => {
-  const repos = await getRepositoriosGitHub();
-  res.json(repos);
-});
+app.use(express.json());
+app.use("/github", githubRouter);
+app.use(
+  cors({
+    origin: "http://localhost:5173", // só o front do Vite pode consumir
+    methods: ["GET", "POST"], // quais métodos HTTP permite
+    credentials: false, // se true, permite cookies cross-origin
+  }),
+);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -1,6 +1,10 @@
 // Octokit.js
 // https://github.com/octokit/core.js#readme
 import { Octokit } from "octokit";
+import { getCache, setCache } from "./cacheService.ts";
+
+const CHAVE_CACHE_REPOS = "github:repos";
+const TTL_REPOS_MS = 10 * 60 * 1000; // 10 minutos
 
 export interface GitHubRepoResponse {
   id: number;
@@ -23,6 +27,9 @@ export interface RepoFiltrado {
 }
 
 export async function getRepositoriosGitHub(): Promise<RepoFiltrado[]> {
+  const emCache = getCache<RepoFiltrado[]>(CHAVE_CACHE_REPOS);
+  if (emCache) return emCache;
+
   const octokit = new Octokit();
 
   const res = await octokit.request("GET /users/gabriellopasso/repos", {
@@ -31,7 +38,6 @@ export async function getRepositoriosGitHub(): Promise<RepoFiltrado[]> {
       "X-GitHub-Api-Version": "2026-03-10",
     },
   });
-  //console.log(res.data);
 
   const repositoriosBrutos: GitHubRepoResponse[] = res.data;
 
@@ -44,5 +50,8 @@ export async function getRepositoriosGitHub(): Promise<RepoFiltrado[]> {
     description: repo.description,
     language: repo.language,
   }));
+
+  setCache(CHAVE_CACHE_REPOS, reposFiltrados, TTL_REPOS_MS);
+
   return reposFiltrados;
 }
